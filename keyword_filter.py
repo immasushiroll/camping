@@ -37,10 +37,12 @@ def matches_keywords(position: str, keywords: list[str] = KEYWORDS, not_kw: list
     looking for and NOT any of the ones I'm not.
     """
     position_lower = position.lower()
-    if position_lower not in not_kw:
-        return any(kw.lower() in position_lower for kw in keywords)
-    else:
+    if any(kw.lower() in position_lower for kw in not_kw):
+        # print('wrong position')
         return False
+    else:
+        # print('right position')
+        return any(kw.lower() in position_lower for kw in keywords)
 
 
 def filter_by_keywords(
@@ -58,4 +60,4 @@ def filter_by_keywords(
             final_results[url] = matched
     return final_results
 
-# final_results = filter_by_keywords(fresh_results, KEYWORDS)
+# matches_keywords("engineer manager", keywords=KEYWORDS, not_kw=NOT_KEYWORDS)
