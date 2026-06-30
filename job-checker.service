@@ -1,0 +1,26 @@
+[Unit]
+Description=Check career pages for matching job postings (with Gemini filtering)
+# Wait until the graphical session (D-Bus, display) is ready, since this
+# script opens a terminal window and needs a working GUI session.
+After=graphical-session.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 %h/job-checker/check_jobs.py
+
+# Needed so subprocess.Popen([...gnome-terminal/kgx...]) can reach your
+# actual running display and D-Bus session, not a headless one.
+Environment=DISPLAY=:0
+
+# Loads GEMINI_API_KEY (and anything else you put there) from a file that's
+# NOT tracked/shared anywhere and has restrictive permissions. See SETUP.md
+# step 4 for how to create ~/.config/job-checker.env
+EnvironmentFile=%h/.config/job-checker.env
+
+# If the terminal window silently fails to appear, uncomment and set this to
+# your actual session bus address (find it by running `echo
+# $DBUS_SESSION_BUS_ADDRESS` while logged into your GNOME session):
+# Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+
+[Install]
+WantedBy=graphical-session.target
